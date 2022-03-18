@@ -3,18 +3,33 @@ import 'dotenv/config';
 import 'reflect-metadata';
 import express from 'express';
 import cors from 'cors';
-
-import createDatabaseConnection from 'database/createConnection';
+import * as entities from 'entities';
 import { addRespondToResponse } from 'middleware/response';
 import { authenticateUser } from 'middleware/authentication';
 import { handleError } from 'middleware/errors';
 import { RouteNotFoundError } from 'errors';
 
+import { createConnection } from 'typeorm';
 import { attachPublicRoutes, attachPrivateRoutes } from './routes';
 
 const establishDatabaseConnection = async (): Promise<void> => {
   try {
-    await createDatabaseConnection();
+    console.log('Establishing database connection');
+
+    await createConnection({
+      type: 'postgres',
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT),
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE,
+      entities: Object.values(entities),
+      synchronize: true,
+    })
+      .then(() => {
+        console.log('Database connection established');
+      })
+      .catch(error => console.log(error));
   } catch (error) {
     console.log(error);
   }
@@ -44,6 +59,7 @@ const initializeExpress = (): void => {
 const initializeApp = async (): Promise<void> => {
   await establishDatabaseConnection();
   initializeExpress();
+  console.log('App initialized');
 };
 
 initializeApp();

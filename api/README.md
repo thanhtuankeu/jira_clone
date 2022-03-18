@@ -4,6 +4,12 @@ The API codebase is fairly simple and should be easy enough to understand.
 
 <br>
 
+set DB_HOST=localhost
+set DB_PORT=5433
+set DB_USER=postgres
+set DB_PASSWORD=123
+set DB_NAME=postgres
+
 | File or folder    | Description                                                                                                                                                                                                                 |
 | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `src/index.ts`    | The entry file. This is where we setup middleware, attach routes, initialize database and express.                                                                                                                          |
